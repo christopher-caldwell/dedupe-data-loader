@@ -124,5 +124,5 @@ export type Fetcher<TData> = (keys: Key[]) => Promise<TData[]>
 export interface DataFetchPromise<TData> {
   key: Key
   resolve: (value: TData | PromiseLike<TData>) => void
-  reject: (reason?: any) => void
+  reject: (reason?: unknown) => void
 }
