@@ -5,6 +5,8 @@ export class DataLoader<TData extends { id: string | number }> {
   fetcher: Fetcher<TData>
   DataCache: Cache
   defaultCacheTtl: number
+  idsToFetch: (number | string)[] = []
+  runner: NodeJS.Timeout | undefined
 
   constructor({ cachingStrategy, fetcher, cacheOptions }: DataLoaderArgs<TData>) {
     this.cachingStrategy = cachingStrategy
@@ -13,7 +15,20 @@ export class DataLoader<TData extends { id: string | number }> {
     this.defaultCacheTtl = cacheOptions?.stdTTL || Number(process.env.DDL_DEFAULT_CACHE_TTL || Infinity)
   }
 
-  load(ids: string[]) {
+  /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values */
+  async load(id: string | number) {
+    if (this.DataCache.has(id)) {
+      return this.DataCache.get<TData>(id)!
+    }
+    // create a promise and push it into the class. return the promise and re-write the set timeout to resolve all the various promises with the cached data / fetcher data
+    this.idsToFetch.push(id)
+    if (this.runner) clearTimeout(this.runner)
+    this.runner = setTimeout(() => {
+      console.log('runner', this.idsToFetch)
+    }, 10)
+  }
+
+  fetch(ids: string[]) {
     if (this.cachingStrategy) return this.cachingStrategy(ids)
     return this.defaultCachingStrategy(ids, this.fetcher)
   }
@@ -75,11 +90,8 @@ interface DataLoaderArgs<TData extends { id: string | number }> {
   cacheOptions?: CacheOptions
 }
 
-
 // need to work out batching in the indiviudal calls
-
 
 /** The method in which cached values are retrieved. This defaults to `node-cache`, but can be substituted for Redis, or whatever other means you wish.  */
 export type CachingStrategy<TData extends { id: string | number }> = (ids: string[]) => Promise<TData[]>
-export type Fetcher<TData> = (ids: string[]) => Promise<TData[]>
-
+export type Fetcher<TData> = (ids: (string | number)[]) => Promise<TData[]>

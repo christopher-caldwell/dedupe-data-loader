@@ -1,14 +1,4 @@
-import { DataLoader } from '@/data-load'
-
-const mockFetcher = async (ids: string[]): Promise<TestCacheItem[]> => {
-  return ids.map((id) => ({ id }))
-}
-
-const TestDataLoader = new DataLoader<TestCacheItem>({ fetcher: mockFetcher })
-
-beforeEach(() => {
-  TestDataLoader.clear()
-})
+import { TestDataLoader, mockFetcher } from '../setup'
 
 describe('Caching', () => {
   test('Retreiving keys returns the appropriate array', () => {
@@ -44,7 +34,3 @@ describe('Caching', () => {
     expect.assertions(4)
   })
 })
-
-type TestCacheItem = {
-  id: string | number
-}

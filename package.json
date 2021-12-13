@@ -11,10 +11,12 @@
     "build": "tsc --p ./tsconfig.build.json && tscpaths -p tsconfig.json -s ./src -o dist"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",

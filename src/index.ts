@@ -1,1 +1,1 @@
-console.log('hey')
+export * from './data-load'
