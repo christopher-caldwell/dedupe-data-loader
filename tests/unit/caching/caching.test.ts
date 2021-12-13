@@ -1,19 +1,19 @@
-import { TestDataLoader, mockFetcher } from '../setup'
+import { TestDataLoader, mockFetcher } from '../../setup'
 
 describe('Caching', () => {
   test('Retreiving keys returns the appropriate array', () => {
-    TestDataLoader.mSet([{ id: '1' }])
+    TestDataLoader.mSet([{ key: '1' }])
     const result = TestDataLoader.mGet(['1'])
     expect(result).toHaveLength(1)
   })
   test('Retreiving keys of un-cached IDs returns the cached IDs', () => {
-    TestDataLoader.mSet([{ id: '1' }])
+    TestDataLoader.mSet([{ key: '1' }])
     const result = TestDataLoader.mGet(['1', '2', '3'])
     expect(result).toHaveLength(1)
   })
   test('Asking for a list of non cached IDs returns the non-cached IDs', () => {
-    TestDataLoader.mSet([{ id: '1' }])
-    const result = TestDataLoader.getListOfNonCachedIds(['1', '2', '3'])
+    TestDataLoader.mSet([{ key: '1' }])
+    const result = TestDataLoader.getListOfNonCachedKeys(['1', '2', '3'])
     expect(result).toHaveLength(2)
     expect(result.includes('1')).toBeFalsy()
     expect(result.includes('2')).toBeTruthy()

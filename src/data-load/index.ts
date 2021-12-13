@@ -1,57 +1,76 @@
-import Cache, { ValueSetItem, Options as CacheOptions } from 'node-cache'
+import Cache, { Key, ValueSetItem, Options as CacheOptions } from 'node-cache'
 
-export class DataLoader<TData extends { id: string | number }> {
+export class DataLoader<TData extends { key: Key }> {
   cachingStrategy: CachingStrategy<TData> | undefined
-  fetcher: Fetcher<TData>
+  fetcher: Fetcher<TData> | undefined
   DataCache: Cache
   defaultCacheTtl: number
-  idsToFetch: (number | string)[] = []
+  keysToFetch: Key[] = []
   runner: NodeJS.Timeout | undefined
+  dataFetchPromises: DataFetchPromise<TData>[] = []
+  delayInterval: number = 10
 
-  constructor({ cachingStrategy, fetcher, cacheOptions }: DataLoaderArgs<TData>) {
+  constructor({ cachingStrategy, fetcher, cacheOptions, delayInterval }: DataLoaderArgs<TData>) {
+    if (!fetcher && !cachingStrategy)
+      throw new Error('You must provide either a fetcher or a cachingStrategy if you want a custom solution.')
     this.cachingStrategy = cachingStrategy
     this.fetcher = fetcher
     this.DataCache = new Cache(cacheOptions)
     this.defaultCacheTtl = cacheOptions?.stdTTL || Number(process.env.DDL_DEFAULT_CACHE_TTL || Infinity)
+    if (delayInterval) this.delayInterval = delayInterval
   }
 
   /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values */
-  async load(id: string | number) {
-    if (this.DataCache.has(id)) {
-      return this.DataCache.get<TData>(id)!
+  async load(key: Key) {
+    if (this.DataCache.has(key)) {
+      return this.DataCache.get<TData>(key)!
     }
-    // create a promise and push it into the class. return the promise and re-write the set timeout to resolve all the various promises with the cached data / fetcher data
-    this.idsToFetch.push(id)
+
+    const dataFetchPromise = new Promise<TData>((resolve, reject) => {
+      this.dataFetchPromises.push({ key: key, resolve, reject })
+    })
+
+    this.keysToFetch.push(key)
     if (this.runner) clearTimeout(this.runner)
-    this.runner = setTimeout(() => {
-      console.log('runner', this.idsToFetch)
+    this.runner = setTimeout(async () => {
+      const items = await this.fetch(this.keysToFetch)
+      this.dataFetchPromises.forEach(({ key, resolve, reject }) => {
+        const itemToResolve = items.find(({ key: keyItem }) => keyItem === key)
+        if (itemToResolve) resolve(itemToResolve)
+        else reject('Not found')
+      })
     }, 10)
+
+    return dataFetchPromise
   }
 
-  fetch(ids: string[]) {
-    if (this.cachingStrategy) return this.cachingStrategy(ids)
-    return this.defaultCachingStrategy(ids, this.fetcher)
+  fetch(keys: Key[]) {
+    if (this.cachingStrategy) return this.cachingStrategy(keys)
+    if (this.fetcher) return this.defaultCachingStrategy(keys, this.fetcher)
+    throw new Error('Both the caching strategy and the fetcher are falsy')
   }
 
   formatDataIntoCache = (data: TData, ttl: number): ValueSetItem => {
     return {
-      key: data.id,
+      key: data.key,
       val: data,
       ttl,
     }
   }
+
+  // BEGIN OWN CACHE METHODS - NOT USED IF USING OWN CACHING STRATEGY
 
   mSet(data: TData[], ttl: number = this.defaultCacheTtl) {
     const cachableData = data.map((item) => this.formatDataIntoCache(item, ttl))
     return this.DataCache.mset(cachableData)
   }
 
-  mGetKeys(ids: string[]) {
-    return this.DataCache.mget<TData>(ids)
+  mGetKeys(keys: Key[]) {
+    return this.DataCache.mget<TData>(keys)
   }
 
-  mGet(ids: string[]) {
-    const mgetKeyResponse = this.mGetKeys(ids)
+  mGet(keys: Key[]) {
+    const mgetKeyResponse = this.mGetKeys(keys)
     return Object.values(mgetKeyResponse)
   }
 
@@ -60,38 +79,50 @@ export class DataLoader<TData extends { id: string | number }> {
     return this.DataCache.del(allKeys)
   }
 
-  delete(id: string | number) {
-    return this.DataCache.del(id)
+  delete(key: Key) {
+    return this.DataCache.del(key)
   }
 
-  getListOfNonCachedIds = (ids: string[]): string[] => {
-    const nonCachedIds = []
-    const cachedIds = this.mGetKeys(ids)
-    for (const id of ids) {
-      if (!cachedIds[id]) nonCachedIds.push(id)
+  getListOfNonCachedKeys = (keys: Key[]): Key[] => {
+    const nonCachedKeys = []
+    const cachedKeys = this.mGetKeys(keys)
+    for (const key of keys) {
+      if (!cachedKeys[key]) nonCachedKeys.push(key)
     }
 
-    return nonCachedIds
+    return nonCachedKeys
   }
 
-  /** Used if no other staregy provided. Will check the cache, run the fetcher, and cahe the result on the way out. */
-  async defaultCachingStrategy(ids: string[], fetcher: Fetcher<TData>) {
-    const cachedData = this.mGet(ids)
-    const nonCachedIds = this.getListOfNonCachedIds(ids)
-    const freshlyFetchedData = await fetcher(nonCachedIds)
+  /** Used if no other staregy provkeyed. Will check the cache, run the fetcher, and cahe the result on the way out. */
+  async defaultCachingStrategy(keys: Key[], fetcher: Fetcher<TData>) {
+    const cachedData = this.mGet(keys)
+    const nonCachedKeys = this.getListOfNonCachedKeys(keys)
+    const freshlyFetchedData = await fetcher(nonCachedKeys)
     this.mSet(freshlyFetchedData)
     return [...cachedData, ...freshlyFetchedData]
   }
 }
 
-interface DataLoaderArgs<TData extends { id: string | number }> {
-  cachingStrategy?: CachingStrategy<TData>
-  fetcher: Fetcher<TData>
+/** If you wish to provide your own caching strategy, you will need to get the cached, fetch the uncached, and cache the result.
+ * If you wish not to cahce anything, simply run your `fetcher` as your `cachingStrategy`.
+ */
+type DataLoaderArgs<TData extends { key: Key }> = {
   cacheOptions?: CacheOptions
+  cachingStrategy?: CachingStrategy<TData>
+  fetcher?: Fetcher<TData>
+  /** Time given to catch the next `load` call. The loader will wait n for another call to load data.
+   * For example, if you provide `100`, the loader will wait 100ms after the last call to load before invoking your fetcher.
+   * This timeout will be reset each call to `load`.
+   * @default 10ms
+   */
+  delayInterval?: number
 }
 
-// need to work out batching in the indiviudal calls
-
 /** The method in which cached values are retrieved. This defaults to `node-cache`, but can be substituted for Redis, or whatever other means you wish.  */
-export type CachingStrategy<TData extends { id: string | number }> = (ids: string[]) => Promise<TData[]>
-export type Fetcher<TData> = (ids: (string | number)[]) => Promise<TData[]>
+export type CachingStrategy<TData extends { key: Key }> = (keys: Key[]) => Promise<TData[]>
+export type Fetcher<TData> = (keys: Key[]) => Promise<TData[]>
+export interface DataFetchPromise<TData> {
+  key: Key
+  resolve: (value: TData | PromiseLike<TData>) => void
+  reject: (reason?: any) => void
+}
