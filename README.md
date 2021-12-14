@@ -1,6 +1,6 @@
 # De-duping Data Loader
 
-Multi use data loader, with built in de-duped caching. The only drawback is that your items need to have IDs.
+Multi use data loader, with built in de-duped caching. This is heavily influenced by the original [data loader](https://github.com/graphql/dataloader), whith the ability to introduce your own caching middleware.
 
 [![NPM](https://img.shields.io/npm/v/@caldwell619/@caldwell619/data-loader.svg)](https://www.npmjs.com/package/@caldwell619/@caldwell619/data-loader) [![NPM](https://img.shields.io/bundlephobia/min/@caldwell619/@caldwell619/data-loader)](https://www.npmjs.com/package/@caldwell619/@caldwell619/data-loader) [![](https://img.shields.io/github/last-commit/christopher-caldwell/@caldwell619/data-loader)]() [![](https://img.shields.io/npm/types/typescript)]()
 
@@ -17,15 +17,6 @@ yarn add @cladwell619/data-loader
 ## Usgae
 
 There is only one required argument to the constructor, and that is a way to get your data. It is one of 2 options, a [caching strategy](#caching-strategy) or a [fetcher](#fetcher).
-
-### Options
-
-| Name              | Type                                                                                                                        | Description                                                                                                                                                                               |     Required?      |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------: |
-| `fetcher`         | <code>\<TData>(ids: (string \| number)[]) => Promise<TData[]></code>                                                        | Function to fetch your data based on the array of IDs given. The result will be cached for you.                                                                                           | :white_check_mark: |
-| `cachingStrategy` | <code>\<TData>(ids: (string \| number)[]) => Promise<TData[]></code>                                                        | Function to override default caching behavior. With this, you will be responsible for caching and fetching your own data.                                                                 | :white_check_mark: |
-| `cacheOptions`    | [CacheOptions](https://github.com/node-cache/node-cache/blob/1e5c75e84f91d47728655f0976ee6246a7ed8664/index.d.ts#L149-L228) | The options given to [node-cache](https://github.com/node-cache/node-cache). Only used if **not** using your own `cachingStrategy`                                                        |        :x:         |
-| `delayInterval`   | `number`                                                                                                                    | The amount of time alloted between the last `load` call and the execution of the `fetcher`. Defaults to **10ms**. This means that 10ms after the last call to load, the fetcher will run. |        :x:         |
 
 ### Fetcher
 
@@ -58,7 +49,53 @@ const AuthorLoader = new DataLoader({
 })
 ```
 
-### Caveats
+### Manipulating the Built In Cache
+
+There are at least 2 ways to approach using the built in caching. You can instantiate the loader each request to ensure there is no stale data, or you can do it outside of the request and manipulate the cache when necessary
+
+<details>
+<summary>
+Busting the cache when an item is updated
+</summary>
+
+```ts
+const AuthorLoader = new DataLoader<Author>({
+  fetcher: async (ids) => { ... }
+})
+
+app.get('/books', () => {
+  // Do books logic, see express example
+})
+
+app.patch('/book/:id', (req, res) => {
+  const id = req.params.id
+  // book gets updated
+  const newBook = await updateBook()
+  AuthorLoader.set(id, newBook)
+})
+
+app.delete('/book/:id', (req, res) => {
+  const id = req.params.id
+  // book gets deleted
+  AuthorLoader.delete(id)
+})
+```
+
+</details>
+<br/>
+
+This is an additional layer of overhead, and it's up to your use case whether or not you choose to cache.
+
+### Options
+
+| Name              | Type                                                                                                                        | Description                                                                                                                                                                               | Required? |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------: |
+| `fetcher`         | <code>\<TData>(ids: (string \| number)[]) => Promise<TData[]></code>                                                        | Function to fetch your data based on the array of IDs given. The result will be cached for you.                                                                                           | :warning: |
+| `cachingStrategy` | <code>\<TData>(ids: (string \| number)[]) => Promise<TData[]></code>                                                        | Function to override default caching behavior. With this, you will be responsible for caching and fetching your own data.                                                                 | :warning: |
+| `cacheOptions`    | [CacheOptions](https://github.com/node-cache/node-cache/blob/1e5c75e84f91d47728655f0976ee6246a7ed8664/index.d.ts#L149-L228) | The options given to [node-cache](https://github.com/node-cache/node-cache). Only used if **not** using your own `cachingStrategy`                                                        |    :x:    |
+| `delayInterval`   | `number`                                                                                                                    | The amount of time alloted between the last `load` call and the execution of the `fetcher`. Defaults to **10ms**. This means that 10ms after the last call to load, the fetcher will run. |    :x:    |
+
+### Caveats :warning:
 
 You **cannot** provide nothing to the constructor. If you omit both the `fetcher` and the `cachingStrategy`, an error will be thrown.
 
@@ -94,6 +131,12 @@ For example, if you have 5 IDs, 1,2,3,4,5 and request them, they will all be cac
 This means that if you add an ID and request 1,2,3,4,5,6, your fetcher will only be given `[6]` to lighten the load on your data store. This is done to reduce the potential strain on the fetcher, as the request would have been passed 6 IDs rather than 1.
 
 If this is not for you, you can easily roll your own with the `cachingStrategy` argument.
+
+## Cons of Usage
+
+For the first version, a drawback is that your items need to have IDs, in the form of `id`. Your items need to have the property `id` on them for caching.
+
+This is annoying, and will be worked on in the future.
 
 ## Loading Data
 
@@ -178,3 +221,114 @@ expect(result).toHaveLength(3)
 By using this, you get all the benefits of simplified, de-duped caching. This can be useful in a REST API where you're fetching a list of items that have entities on them via an ID. Checkout an [example of this](). It's not a "super clean, slick" solution, but it really helps the issue of over fetching.
 
 In summary: If your list of 20 items has the same relationship ID 6 times, this tool does the work for you to not make 5 redundant requests, but rather 1 necessary request for the 6th ID so you can give all of them back to the entity without making uneccesary persistence calls.
+
+## Usage with GraphQL
+
+The main purpose of this loader is to fetch relationships during a GraphQL query.
+
+Using the books again, if someone requests that book's author in the query, you don't want to have to run n ( # of books ) number requests to your persistence layer asking for n authors.
+
+### Without the Loader
+
+Without a loader, you would have to make a query for each ID. This leads to the n+1 issue previously mentioned, as you need to make as many queries as you have items.
+
+<details>
+<summary>
+A query to get the books
+</summary>
+
+```graphql
+# The query to get books
+{
+  query
+  Books {
+    books {
+      id
+      name
+      author {
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+</details>
+<details>
+<summary>
+The books resolver without a loader
+</summary>
+
+Using pseduo syntax for the [pg](https://node-postgres.com/) library here.
+
+```ts
+// A Book resolver without a data loader
+
+const getAuthor = async (authorId: number): Promise<Author> => {
+  const { rows } = await dq.query<Author>('select * from author where id = $1', [authorId])
+
+  return rows[0]
+}
+
+const books = () => {
+  return [
+    {
+      id: 1,
+      name: 'Goblet of Fire',
+      author: () => getAuthor(1), // <-- This will run once for every book
+    },
+    {
+      id: 1,
+      name: 'Order of the Phoenix',
+      author: () => getAuthor(1), // <-- This will run once for every book
+    },
+  ]
+}
+```
+
+</details>
+
+### Using the Loader
+
+Introducing the loader. Now instead of running the query once per book, you write a `fetcher` that will use all of the IDs to make one query, returning all you need.
+
+<details>
+<summary>
+The above example, subbing for a data loader
+</summary>
+
+```ts
+// A Book resolver without a data loader
+
+const getAuthors = async (authorIds: number[]): Promise<Author[]> => {
+  const { rows } = await dq.query<Author>(`select * from author where 'id' in ( unnest($1) )`, [authorIds])
+  return rows
+}
+
+/** This would normally be passed down via context. For an example, see the GraphQL- tests */
+const AuthorLoader = new DataLoader({
+  fetcher: getAuthors,
+})
+
+const books = () => {
+  return [
+    {
+      id: 1,
+      name: 'Goblet of Fire',
+      /** This function will still run once per book, but your DB query will only run once, after all the IDs have been collected */
+      author: () => AuthorLoader.load(1),
+    },
+    {
+      id: 1,
+      name: 'Order of the Phoenix',
+      author: () => AuthorLoader.load(1),
+    },
+  ]
+}
+```
+
+</details>
+<br/>
+
+Using a loader for a single item works the same way as many items.

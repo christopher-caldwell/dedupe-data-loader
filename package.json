@@ -8,9 +8,9 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write src && prettier --write tests",
     "pretest": "tsc --noEmit",
-    "test:unit": "jest unit",
-    "test:integration": "jest integration",
-    "test:graphql": "jest integration/graphql",
+    "test:unit": "jest unit --detectOpenHandles",
+    "test:integration": "jest integration --detectOpenHandles",
+    "test:graphql": "jest integration/graphql --detectOpenHandles",
     "test:all": "jest",
     "build": "microbundle --target node --compress --tsconfig tsconfig.build.json"
   },

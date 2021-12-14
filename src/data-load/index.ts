@@ -33,7 +33,8 @@ export class DataLoader<TData extends { id: Key }> {
     this.keysToFetch.push(key)
     if (this.runner) clearTimeout(this.runner)
     this.runner = setTimeout(async () => {
-      const items = await this.fetch(this.keysToFetch)
+      // TODO consider uniqueness here - test out multiple keys
+      const items = await this.fetch([...new Set(this.keysToFetch)])
       this.dataFetchPromises.forEach(({ key, resolve, reject }) => {
         const itemToResolve = items.find(({ id: keyItem }) => keyItem === key)
         if (itemToResolve) resolve(itemToResolve)
@@ -65,6 +66,10 @@ export class DataLoader<TData extends { id: Key }> {
     return this.DataCache.mset(cachableData)
   }
 
+  set(key: Key, data: TData, ttl: number = this.defaultCacheTtl) {
+    return this.DataCache.set(key, data, ttl)
+  }
+
   mGetKeys(keys: Key[]) {
     return this.DataCache.mget<TData>(keys)
   }
@@ -92,6 +97,8 @@ export class DataLoader<TData extends { id: Key }> {
 
     return nonCachedKeys
   }
+
+  // TODO: consider not requiring a fetcher for this, and using the class one instead..
 
   /** Used if no other staregy provkeyed. Will check the cache, run the fetcher, and cahe the result on the way out. */
   async defaultCachingStrategy(keys: Key[], fetcher: Fetcher<TData>) {
