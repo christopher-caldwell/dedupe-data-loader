@@ -15,7 +15,10 @@ export const AuthorDataLoader = new DataLoader<Author>({
   fetcher: authorFetcher,
 })
 
-export const runQuery = async <TData>(query: string, variables?: Record<string, unknown>): Promise<ExecutionResult<TData>> => {
+export const runQuery = async <TData>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<ExecutionResult<TData>> => {
   const result = await graphql({
     schema,
     contextValue: { AuthorDataLoader },

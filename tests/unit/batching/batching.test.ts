@@ -15,7 +15,5 @@ describe('Batching', () => {
     expect.assertions(2)
   })
 
-  test('Adding IDs from a list, and injecting the result back into the list', () => {
-    
-  })
+  test('Adding IDs from a list, and injecting the result back into the list', () => {})
 })

@@ -12,7 +12,6 @@
     "test:integration": "jest integration",
     "test:graphql": "jest integration/graphql",
     "test:all": "jest",
-    "build:tsc": "tsc --p ./tsconfig.build.json && tscpaths -p tsconfig.json -s ./src -o dist",
     "build": "microbundle --target node --compress --tsconfig tsconfig.build.json"
   },
   "dependencies": {
