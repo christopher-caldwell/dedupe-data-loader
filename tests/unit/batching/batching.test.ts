@@ -10,8 +10,12 @@ describe('Batching', () => {
       TestDataLoader.load('5'),
     ])
 
-    expect(result[0].key).toBe('1')
+    expect(result[0].id).toBe('1')
     expect(mockFetcher).toHaveBeenCalledTimes(1)
     expect.assertions(2)
+  })
+
+  test('Adding IDs from a list, and injecting the result back into the list', () => {
+    
   })
 })

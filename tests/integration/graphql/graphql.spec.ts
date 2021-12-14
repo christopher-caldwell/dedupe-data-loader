@@ -1,5 +1,4 @@
-import { runQuery, BookQuery, BooksQuery, authorFetcher, AuthorDataLoader } from '@setup/graphql'
-import { Book } from '@setup/graphql/data'
+import { runQuery, BookQuery, BooksQuery, authorFetcher, AuthorDataLoader, Book } from '@setup/graphql'
 
 type BookQueryResponse = {
   book: Book
@@ -35,5 +34,12 @@ describe('Vanilla GraphQL', () => {
     expect(authorFetcher).toBeCalledTimes(1)
     expect(lastCall?.books[0]?.author?.id).toBe(1)
     expect(lastCall?.books[2]?.author?.id).toBe(1)
+  })
+
+  test('De-duped caching', async () => {
+    expect.assertions(1)
+    await runQuery<BooksQueryResponse>(BooksQuery)
+    await runQuery<BookQueryResponse>(BookQuery, { id: 1 })
+    expect(authorFetcher).toBeCalledTimes(1)
   })
 })

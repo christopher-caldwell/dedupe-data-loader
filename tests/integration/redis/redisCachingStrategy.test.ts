@@ -19,7 +19,7 @@ describe('Redis Caching Strategy', () => {
       TestDataLoader.load('5'),
     ])
 
-    expect(result[0].key).toBe('1')
+    expect(result[0].id).toBe('1')
     expect(mockFetcher).toHaveBeenCalledTimes(1)
     expect.assertions(2)
   })

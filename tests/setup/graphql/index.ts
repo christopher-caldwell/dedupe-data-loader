@@ -27,3 +27,4 @@ export const runQuery = async <TData>(query: string, variables?: Record<string, 
 }
 
 export * from './queries'
+export * from './data'

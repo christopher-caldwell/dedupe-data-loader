@@ -29,7 +29,7 @@ export const redisCachingStrategy: CachingStrategy<TestCacheItem> = async (keys)
   }
   const missingFromCacheIds = []
   for (const key of keys) {
-    const isKeyCached = !!cachedItems.find(({ key: cachedItemKey }) => cachedItemKey === key)
+    const isKeyCached = !!cachedItems.find(({ id: cachedItemKey }) => cachedItemKey === key)
     if (isKeyCached) continue
     else missingFromCacheIds.push(key)
   }
@@ -39,7 +39,7 @@ export const redisCachingStrategy: CachingStrategy<TestCacheItem> = async (keys)
   const cacheableAllItemsRequested: string[] = []
 
   for (const requestedItem of allItemsRequested) {
-    cacheableAllItemsRequested.push(requestedItem.key as string)
+    cacheableAllItemsRequested.push(requestedItem.id as string)
     cacheableAllItemsRequested.push(JSON.stringify(requestedItem))
   }
 

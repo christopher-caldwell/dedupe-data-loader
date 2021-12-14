@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleNameMapper: {
@@ -6,4 +6,8 @@ module.exports = {
     '@setup/(.*)': '<rootDir>/tests/setup/$1',
   },
   clearMocks: true,
+  collectCoverage: true,
+  collectCoverageFrom: ['<rootDir>/src/*'],
 }
+
+module.exports = config
