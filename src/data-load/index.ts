@@ -1,6 +1,6 @@
 import Cache, { Key, ValueSetItem, Options as CacheOptions } from 'node-cache'
 
-export class DataLoader<TData extends { key: Key }> {
+export class DataLoader<TData extends { id: Key }> {
   cachingStrategy: CachingStrategy<TData> | undefined
   fetcher: Fetcher<TData> | undefined
   DataCache: Cache
@@ -35,7 +35,7 @@ export class DataLoader<TData extends { key: Key }> {
     this.runner = setTimeout(async () => {
       const items = await this.fetch(this.keysToFetch)
       this.dataFetchPromises.forEach(({ key, resolve, reject }) => {
-        const itemToResolve = items.find(({ key: keyItem }) => keyItem === key)
+        const itemToResolve = items.find(({ id: keyItem }) => keyItem === key)
         if (itemToResolve) resolve(itemToResolve)
         else reject('Not found')
       })
@@ -52,7 +52,7 @@ export class DataLoader<TData extends { key: Key }> {
 
   formatDataIntoCache = (data: TData, ttl: number): ValueSetItem => {
     return {
-      key: data.key,
+      key: data.id,
       val: data,
       ttl,
     }
@@ -103,10 +103,11 @@ export class DataLoader<TData extends { key: Key }> {
   }
 }
 
+// TODO: How to make types better, want to not allow both fetcher and caching, but want to require on or the other
 /** If you wish to provide your own caching strategy, you will need to get the cached, fetch the uncached, and cache the result.
  * If you wish not to cahce anything, simply run your `fetcher` as your `cachingStrategy`.
  */
-type DataLoaderArgs<TData extends { key: Key }> = {
+type DataLoaderArgs<TData extends { id: Key }> = {
   cacheOptions?: CacheOptions
   cachingStrategy?: CachingStrategy<TData>
   fetcher?: Fetcher<TData>
@@ -119,7 +120,7 @@ type DataLoaderArgs<TData extends { key: Key }> = {
 }
 
 /** The method in which cached values are retrieved. This defaults to `node-cache`, but can be substituted for Redis, or whatever other means you wish.  */
-export type CachingStrategy<TData extends { key: Key }> = (keys: Key[]) => Promise<TData[]>
+export type CachingStrategy<TData extends { id: Key }> = (keys: Key[]) => Promise<TData[]>
 export type Fetcher<TData> = (keys: Key[]) => Promise<TData[]>
 export interface DataFetchPromise<TData> {
   key: Key

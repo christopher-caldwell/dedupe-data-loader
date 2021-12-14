@@ -1,9 +1,13 @@
 import RedisClient from 'ioredis'
 
 import { CachingStrategy } from '@/data-load'
-import { TestCacheItem, mockFetcher } from '../'
+import { TestCacheItem, mockFetcher } from '..'
 
 export const Redis = new RedisClient()
+
+afterAll(() => {
+  Redis.disconnect()
+})
 
 export const clear = async () => {
   const keys = await Redis.keys('*')
@@ -11,6 +15,7 @@ export const clear = async () => {
   await Redis.del(...keys)
 }
 
+/** Example caching strategy for using Redis. */
 export const redisCachingStrategy: CachingStrategy<TestCacheItem> = async (keys) => {
   const rawPotentialItems = await Redis.mget(...(keys as string[]))
   const cachedItems: TestCacheItem[] = []

@@ -1,13 +1,8 @@
 import { DataLoader } from '@/data-load'
-import { redisCachingStrategy, clear, Redis } from '../setup/redis-client'
-import { mockFetcher } from '../setup'
+import { redisCachingStrategy, clear, mockFetcher } from '@setup/index'
 
 beforeEach(async () => {
   await clear()
-})
-
-afterAll(() => {
-  Redis.disconnect()
 })
 
 const TestDataLoader = new DataLoader({

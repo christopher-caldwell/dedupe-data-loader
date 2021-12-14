@@ -1,4 +1,4 @@
-import { TestDataLoader, mockFetcher } from '../../setup'
+import { TestDataLoader, mockFetcher } from '@setup/index'
 
 describe('Caching', () => {
   test('Retreiving keys returns the appropriate array', () => {

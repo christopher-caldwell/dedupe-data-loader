@@ -1,6 +1,11 @@
-import { TestDataLoader, mockFetcher } from '@setup/index'
+import { DataLoader } from '@/data-load'
+import { mockFetcher } from '@setup/index'
 
-describe('Batching', () => {
+const TestDataLoader = new DataLoader({
+  fetcher: mockFetcher,
+})
+
+describe('Default Caching Strategy', () => {
   test('Requesting 5 separate IDs results in one invocation of the fetcher', async () => {
     const result = await Promise.all([
       TestDataLoader.load('1'),
@@ -13,5 +18,12 @@ describe('Batching', () => {
     expect(result[0].key).toBe('1')
     expect(mockFetcher).toHaveBeenCalledTimes(1)
     expect.assertions(2)
+  })
+  test('Not providing a fetcher nor a caching strategy throws an error', () => {
+    const setup = () => {
+      new DataLoader({})
+    }
+    expect(setup).toThrowError()
+    expect.assertions(1)
   })
 })

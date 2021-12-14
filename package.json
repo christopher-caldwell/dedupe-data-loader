@@ -7,8 +7,10 @@
     "lint": "eslint --ext .tsx,.ts,.js src",
     "type-check": "tsc --noEmit",
     "format": "prettier --write src && prettier --write tests",
-    "test:unit": "jest",
-    "test:integration": "jest --detectOpenHandles",
+    "test:unit": "jest unit",
+    "test:integration": "jest integration",
+    "test:graphql": "jest integration/graphql",
+    "test:all": "jest",
     "build": "tsc --p ./tsconfig.build.json && tscpaths -p tsconfig.json -s ./src -o dist"
   },
   "dependencies": {
@@ -16,6 +18,7 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "@types/faker": "^5.5.9",
     "@types/ioredis": "^4.28.3",
     "@types/jest": "^27.0.3",
     "@types/lodash.debounce": "^4.0.6",
@@ -24,6 +27,8 @@
     "@typescript-eslint/parser": "^5.6.0",
     "eslint": "^8.4.1",
     "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^5.5.3",
+    "graphql": "^16.1.0",
     "ioredis": "^4.28.2",
     "jest": "^27.4.4",
     "prettier": "^2.5.1",
