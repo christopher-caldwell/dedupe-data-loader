@@ -1,4 +1,11 @@
-node_modules
+# Build
 dist
 yarn-error.log
+
+# Test
 coverage
+
+# Dependencies
+node_modules
+.yalc
+yalc.lock
