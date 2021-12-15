@@ -4,6 +4,7 @@ yarn-error.log
 
 # Test
 coverage
+*.sqlite
 
 # Dependencies
 node_modules
