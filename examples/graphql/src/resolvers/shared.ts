@@ -1,6 +1,6 @@
-import { DataLoader } from '@/index'
+import { DataLoader } from '@caldwell619/data-loader'
 
-import { Author, BookData } from '../data'
+import { Author, BookData } from '../db'
 
 export interface GraphQLContext {
   AuthorLoader: DataLoader<Author>

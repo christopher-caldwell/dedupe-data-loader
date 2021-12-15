@@ -1,4 +1,4 @@
-import { books as allBooks, BookSchema } from '../data'
+import { BookSchema, knex } from '../db'
 import { Resolver } from './shared'
 
 export const book: Resolver<BookSchema, { id: string }> = async ({ id }, { AuthorLoader, BookLoader }) => {
@@ -6,16 +6,18 @@ export const book: Resolver<BookSchema, { id: string }> = async ({ id }, { Autho
   if (targetBook) {
     return {
       ...targetBook,
-      author: () => AuthorLoader.load(targetBook.authorId),
+      author: () => AuthorLoader.load(targetBook.author_id),
     }
   }
   throw new Error('Not found')
 }
 
 export const books: Resolver<BookSchema[]> = async ({}, { AuthorLoader }) => {
+  // Optionally, you could cache
+  const allBooks = await knex('book').select()
   const books: BookSchema[] = allBooks.map((bookOption) => ({
     ...bookOption,
-    author: () => AuthorLoader.load(bookOption.authorId),
+    author: () => AuthorLoader.load(bookOption.author_id),
   }))
   return books
 }

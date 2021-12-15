@@ -1,11 +1,15 @@
 export interface BookData {
   id: number
   title: string
-  authorId: number
+  author_id: number
 }
 
 export interface Book extends BookData {
   author: Author
+}
+
+export interface BookSchema extends BookData {
+  author: Author | (() => Promise<Author>)
 }
 export interface Author {
   id: number
@@ -31,56 +35,56 @@ export const books: BookData[] = [
   {
     id: 1,
     title: "Sorccer's Stone",
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 2,
     title: "Chamber of Secret's",
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 3,
     title: 'Prisoner of Azkaban',
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 4,
     title: 'Goblet of Fire',
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 5,
     title: 'Order of the Phoenix',
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 6,
     title: 'Half Blood Prince',
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 7,
     title: 'Deathly Hallows',
-    authorId: 1,
+    author_id: 1,
   },
   {
     id: 8,
     title: 'Fellowship of the Ring',
-    authorId: 2,
+    author_id: 2,
   },
   {
     id: 9,
     title: 'Two Towers',
-    authorId: 2,
+    author_id: 2,
   },
   {
     id: 10,
     title: 'Return of the King',
-    authorId: 2,
+    author_id: 2,
   },
   {
     id: 11,
     title: 'Thrawn',
-    authorId: 3,
+    author_id: 3,
   },
 ]

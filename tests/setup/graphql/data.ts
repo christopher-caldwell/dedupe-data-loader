@@ -2,7 +2,7 @@ import { Key } from 'node-cache'
 
 export interface BookData {
   id: Key
-  name: string
+  title: string
   authorId: Key
 }
 export interface BookSchema extends BookData {
@@ -34,57 +34,57 @@ export const authors: Author[] = [
 export const books: BookData[] = [
   {
     id: 1,
-    name: "Sorccer's Stone",
+    title: "Sorccer's Stone",
     authorId: 1,
   },
   {
     id: 2,
-    name: "Chamber of Secret's",
+    title: "Chamber of Secret's",
     authorId: 1,
   },
   {
     id: 3,
-    name: 'Prisoner of Azkaban',
+    title: 'Prisoner of Azkaban',
     authorId: 1,
   },
   {
     id: 4,
-    name: 'Goblet of Fire',
+    title: 'Goblet of Fire',
     authorId: 1,
   },
   {
     id: 5,
-    name: 'Order of the Phoenix',
+    title: 'Order of the Phoenix',
     authorId: 1,
   },
   {
     id: 6,
-    name: 'Half Blood Prince',
+    title: 'Half Blood Prince',
     authorId: 1,
   },
   {
     id: 7,
-    name: 'Deathly Hallows',
+    title: 'Deathly Hallows',
     authorId: 1,
   },
   {
     id: 8,
-    name: 'Fellowship of the Ring',
+    title: 'Fellowship of the Ring',
     authorId: 2,
   },
   {
     id: 9,
-    name: 'Two Towers',
+    title: 'Two Towers',
     authorId: 2,
   },
   {
     id: 10,
-    name: 'Return of the King',
+    title: 'Return of the King',
     authorId: 2,
   },
   {
     id: 11,
-    name: 'Thrawn',
+    title: 'Thrawn',
     authorId: 3,
   },
 ]
