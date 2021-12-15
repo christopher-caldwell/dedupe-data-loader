@@ -2,7 +2,7 @@
 
 Multi use data loader, with built in de-duped caching. This is heavily influenced by the original [data loader](https://github.com/graphql/dataloader), whith the ability to introduce your own caching middleware.
 
-[![NPM](https://img.shields.io/npm/v/@caldwell619/data-loader.svg)](https://www.npmjs.com/package/@caldwell619/data-loader) [![NPM](https://img.shields.io/bundlephobia/min/@caldwell619/data-loader)](https://www.npmjs.com/package/@caldwell619/data-loader) [![](https://img.shields.io/github/last-commit/christopher-caldwell/dedupe-data-loader)]() [![](https://img.shields.io/npm/types/typescript)]()
+[![NPM](https://img.shields.io/npm/v/@caldwell619/data-loader.svg)](https://www.npmjs.com/package/@caldwell619/data-loader) [![NPM](https://img.shields.io/bundlephobia/min/@caldwell619/data-loader)](https://bundlephobia.com/package/@caldwell619/data-loader) [![](https://img.shields.io/github/last-commit/christopher-caldwell/dedupe-data-loader)]() [![](https://img.shields.io/npm/types/typescript)]()
 
 If you're wonder what is a data loader, the TL;DR is that it efficiently fetches your data in batches rather than sending n number of requests. For a more detailed explanation, keep reading.
 
