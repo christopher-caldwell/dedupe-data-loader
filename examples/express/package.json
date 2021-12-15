@@ -1,14 +1,15 @@
 {
   "name": "express-rest",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --exec \"yarn start\" --ext .ts",
+    "start": "ts-node -r tsconfig-paths/register src/index.ts"
+  },
   "dependencies": {
+    "@caldwell619/data-loader": "link:../../",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "knex": "^0.95.14",
-    "serialize-error": "^8.0.0",
-    "sqlite3": "^5.0.2"
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

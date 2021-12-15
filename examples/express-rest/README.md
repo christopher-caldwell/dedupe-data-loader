@@ -1,1 +1,0 @@
-# Express Rest API Data Loader Example

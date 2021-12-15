@@ -14,9 +14,8 @@
     "types": ["node", "jest"],
     "paths": {
       "@/*": ["*"],
-      "@setup/*": ["../tests/setup/*"]
     }
   },
-  "include": ["src", "tests", "examples"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

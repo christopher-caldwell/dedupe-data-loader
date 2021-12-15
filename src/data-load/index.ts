@@ -38,7 +38,7 @@ export class DataLoader<TData extends { id: Key }> {
       this.dataFetchPromises.forEach(({ key, resolve, reject }) => {
         const itemToResolve = items.find(({ id: keyItem }) => keyItem === key)
         if (itemToResolve) resolve(itemToResolve)
-        else reject('Not found')
+        else reject(`Item ${key} was not found`)
       })
     }, 10)
 
@@ -77,6 +77,11 @@ export class DataLoader<TData extends { id: Key }> {
   mGet(keys: Key[]) {
     const mgetKeyResponse = this.mGetKeys(keys)
     return Object.values(mgetKeyResponse)
+  }
+
+  all(){
+    const allKeys = this.DataCache.keys()
+    return this.mGet(allKeys)
   }
 
   clear() {
