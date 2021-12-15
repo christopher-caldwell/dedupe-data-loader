@@ -1,0 +1,25 @@
+{
+  "name": "apollo-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write src",
+    "lint": "tsc --noEmit && eslint --ext .tsx,.ts,.js src",
+    "dev": "nodemon --exec \"yarn start\" --ext .ts",
+    "start": "ts-node -r tsconfig-paths/register src/index.ts"
+  },
+  "dependencies": {
+    "@caldwell619/data-loader": "link:../../",
+    "apollo-server": "^3.5.0",
+    "graphql": "^16.1.0",
+    "knex": "^0.95.14",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
+    "typescript": "^4.5.4"
+  }
+}
