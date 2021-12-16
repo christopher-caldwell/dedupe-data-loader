@@ -20,7 +20,7 @@ export class DataLoader<TData extends { id: Key }> {
     if (delayInterval) this.delayInterval = delayInterval
   }
 
-  /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values */
+  /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values. */
   async load(key: Key) {
     if (this.DataCache.has(key)) {
       return this.DataCache.get<TData>(key)!
@@ -45,12 +45,14 @@ export class DataLoader<TData extends { id: Key }> {
     return dataFetchPromise
   }
 
+  /** Invokes the provided fetcher */
   fetch(keys: Key[]) {
     if (this.cachingStrategy) return this.cachingStrategy(keys)
     if (this.fetcher) return this.defaultCachingStrategy(keys, this.fetcher)
     throw new Error('Both the caching strategy and the fetcher are falsy')
   }
 
+  /** Takes an ID enabled object and returns the data in a version that can be cached */
   formatDataIntoCache = (data: TData, ttl: number): ValueSetItem => {
     return {
       key: data.id,
@@ -59,11 +61,11 @@ export class DataLoader<TData extends { id: Key }> {
     }
   }
 
-  // BEGIN OWN CACHE METHODS - NOT USED IF USING OWN CACHING STRATEGY
+  //<------ BEGIN OWN CACHE METHODS - NOT USED IF USING OWN CACHING STRATEGY ----> //
 
   mSet(data: TData[], ttl: number = this.defaultCacheTtl) {
-    const cachableData = data.map((item) => this.formatDataIntoCache(item, ttl))
-    return this.DataCache.mset(cachableData)
+    const dataToBeCached = data.map((item) => this.formatDataIntoCache(item, ttl))
+    return this.DataCache.mset(dataToBeCached)
   }
 
   set(key: Key, data: TData, ttl: number = this.defaultCacheTtl) {
@@ -79,20 +81,24 @@ export class DataLoader<TData extends { id: Key }> {
     return Object.values(mgetKeyResponse)
   }
 
+  /** Returns all the cached data in this cache */
   all() {
     const allKeys = this.DataCache.keys()
     return this.mGet(allKeys)
   }
 
+  /** Deletes all the keys in this cache  */
   clear() {
     const allKeys = this.DataCache.keys()
     return this.DataCache.del(allKeys)
   }
 
+  /** Removes a key from the built in cache. Will have no effect if using your own `cachingStrategy` */
   delete(key: Key) {
     return this.DataCache.del(key)
   }
 
+  /** Returns a list of keys that are not in the cache, out of the list provided. */
   getListOfNonCachedKeys = (keys: Key[]): Key[] => {
     const nonCachedKeys = []
     const cachedKeys = this.mGetKeys(keys)
@@ -105,7 +111,7 @@ export class DataLoader<TData extends { id: Key }> {
 
   // TODO: consider not requiring a fetcher for this, and using the class one instead..
 
-  /** Used if no other staregy provkeyed. Will check the cache, run the fetcher, and cahe the result on the way out. */
+  /** Used if no other strategy provided. Will check the cache, run the fetcher, and cache the result on the way out. */
   async defaultCachingStrategy(keys: Key[], fetcher: Fetcher<TData>) {
     const cachedData = this.mGet(keys)
     const nonCachedKeys = this.getListOfNonCachedKeys(keys)
@@ -117,11 +123,19 @@ export class DataLoader<TData extends { id: Key }> {
 
 // TODO: How to make types better, want to not allow both fetcher and caching, but want to require on or the other
 /** If you wish to provide your own caching strategy, you will need to get the cached, fetch the uncached, and cache the result.
- * If you wish not to cahce anything, simply run your `fetcher` as your `cachingStrategy`.
+ * If you wish not to cache anything, simply run your `fetcher` as your `cachingStrategy`.
  */
 type DataLoaderArgs<TData extends { id: Key }> = {
+  /** The options given to the node-cache. This is where you would control the cache TTL */
   cacheOptions?: CacheOptions
+  /** Override the built in caching. If you need to handle your own caching, this is where it's done.
+   *
+   * Should **not** be used in conjunction with `fetcher`
+   */
   cachingStrategy?: CachingStrategy<TData>
+  /** Function used to fetch from your data persistence.
+   * This function will be given a list of IDs, and be expected to return the corresponding data for those IDs
+   */
   fetcher?: Fetcher<TData>
   /** Time given to catch the next `load` call. The loader will wait n for another call to load data.
    * For example, if you provide `100`, the loader will wait 100ms after the last call to load before invoking your fetcher.

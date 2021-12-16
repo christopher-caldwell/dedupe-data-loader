@@ -2,7 +2,7 @@
 
 An example of using the data loader in a vanilla GraphQL API powered by Express. This is \*_not_ using any express-graphql middleware. I't just an express server, with a single route at `/graphql`.
 
-I run GraphQL in serverless environments a lot, so this is the style I use there ( without Express ). You invoke the `graphql` runner explicity which you can see in [runQuery](./src/runQuery.ts)
+I run GraphQL in serverless environments a lot, so this is the style I use there ( without Express ). You invoke the `graphql` runner explicitly which you can see in [runQuery](./src/runQuery.ts)
 
 ## Data Store
 
@@ -48,7 +48,7 @@ The result to the client will be the result of `getAuthor`, as GraphQL will run 
 ```json
 {
   "id": 1,
-  "title": "The Illiad",
+  "title": "The Iliad",
   "author": {
     "id": 1,
     "name": "Homer"
@@ -62,7 +62,7 @@ This is great, but what if you have 100 books? This means `getAuthor` will be ra
 
 ## The Solution
 
-In comes the data loader. Instead of making your calls directly to the DB, you ask the loader to load the id. After it has been loaded, it will aggreagte all these IDs into an array of unique IDs, then pass them to your fetcher.
+In comes the data loader. Instead of making your calls directly to the DB, you ask the loader to load the id. After it has been loaded, it will aggregate all these IDs into an array of unique IDs, then pass them to your fetcher.
 
 ```ts
 // 2nd argument is the context given at the root load

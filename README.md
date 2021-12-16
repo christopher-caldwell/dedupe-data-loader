@@ -1,6 +1,6 @@
 # De-duping Data Loader
 
-Multi use data loader, with built in de-duped caching. This is heavily influenced by the original [data loader](https://github.com/graphql/dataloader), whith the ability to introduce your own caching middleware.
+Multi use data loader, with built in de-duped caching. This is heavily influenced by the original [data loader](https://github.com/graphql/dataloader), with the ability to introduce your own caching middleware.
 
 [![NPM](https://img.shields.io/npm/v/@caldwell619/data-loader.svg)](https://www.npmjs.com/package/@caldwell619/data-loader) [![NPM](https://img.shields.io/bundlephobia/min/@caldwell619/data-loader)](https://bundlephobia.com/package/@caldwell619/data-loader) [![](https://img.shields.io/github/last-commit/christopher-caldwell/dedupe-data-loader)]() [![](https://img.shields.io/npm/types/typescript)]()
 
@@ -17,10 +17,10 @@ Secondly, I personally wanted to see if I could. It's an insanely popular packag
 For the copy / paste.
 
 ```shell
-yarn add @cladwell619/data-loader
+yarn add @caldwell619/data-loader
 ```
 
-## Usgae
+## Usage
 
 There is only one required argument to the constructor, and that is a way to get your data. It is one of 2 options, a [caching strategy](#caching-strategy) or a [fetcher](#fetcher).
 
@@ -41,7 +41,7 @@ const AuthorLoader = new DataLoader({
 
 ### Caching Strategy
 
-This library comes with it's own caching stragety using [node-cache](https://github.com/node-cache/node-cache). Each instance of the data loader will have it's own cache.
+This library comes with a caching strategy using [node-cache](https://github.com/node-cache/node-cache). Each instance of the data loader will have a separate cache. Meaning if you create 2 loaders, they will each have their own cache.
 
 If you have your own caching method, you can inject it into the data loader via the `cachingStrategy`. There is an example of this for [Redis](./tests/integration/redis/redisCachingStrategy.test.ts) and a [no-cache approach](./tests/integration/no-cache/noCache.test.ts) in the examples.
 
@@ -148,11 +148,11 @@ This is annoying, and will be worked on in the future.
 
 The core functionality of a data loader is to batch many calls into one efficient one. An example of this is when there is an ID stored on an entity, and you would then have to fetch this ID, via SQL or whatever.
 
-Without any intervention, you have an [N+1 problem](https://youtu.be/uCbFMZYQbxE). This is primarly found in GraphQL, but can be applicable in REST as well.
+Without any intervention, you have an [N+1 problem](https://youtu.be/uCbFMZYQbxE). This is primarily found in GraphQL, but can be applicable in REST as well.
 
 Say for example, you fetch a list of books, with an `authorId` on them. You can iterate through the books, fetch the author by ID and call it a day. This would leave you with as many queries as there are books, as you would need to know the author of each book.
 
-This is where the laoder comes in. Instead of waiting for each query, you `.load()` the ID into the loader. See [this one](tests/unit/batching/batching.test.ts) for a non-GraphQL example, and this section on [usage with GraphQL](#usage-with-graphql)
+This is where the loader comes in. Instead of waiting for each query, you `.load()` the ID into the loader. See [this one](tests/unit/batching/batching.test.ts) for a non-GraphQL example, and this section on [usage with GraphQL](#usage-with-graphql)
 
 <details>
   <summary>Express Example</summary>
@@ -207,7 +207,7 @@ app.get('/books', async (req, res) => {
 
 ## Using the Caching Strategy as a Standalone
 
-The primary usecase for a data loader is with GraphQL. However the loader, and the caching strategy can be used independently of GraphQL.
+The primary use case for a data loader is with GraphQL. However the loader, and the caching strategy can be used independently of GraphQL.
 
 For a detailed example, look at the [Express example](./examples/express/README.md).
 
@@ -226,7 +226,7 @@ expect(result).toHaveLength(3)
 
 By using this, you get all the benefits of simplified, de-duped caching. This can be useful in a REST API where you're fetching a list of items that have entities on them via an ID. Checkout an [example of this](./examples/express/src/routes/book.ts). It's not a "super clean, slick" solution, but it really helps the issue of over fetching.
 
-In summary: If your list of 20 items has the same relationship ID 6 times, this tool does the work for you to not make 5 redundant requests, but rather 1 necessary request for the 6th ID so you can give all of them back to the entity without making uneccesary persistence calls.
+In summary: If your list of 20 items has the same relationship ID 6 times, this tool does the work for you to not make 5 redundant requests, but rather 1 necessary request for the 6th ID so you can give all of them back to the entity without making unnecessary persistence calls.
 
 ## Usage with GraphQL
 
@@ -266,7 +266,7 @@ A query to get the books
 The books resolver without a loader
 </summary>
 
-Using pseduo syntax for the [pg](https://node-postgres.com/) library here.
+Using pseudo syntax for the [pg](https://node-postgres.com/) library here.
 
 ```ts
 // A Book resolver without a data loader

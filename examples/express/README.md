@@ -4,7 +4,7 @@ An example of using the data loader in a traditional REST API powered by Express
 
 ## Data Store
 
-The data store here is any sort of Mongo / Elastic / Dynamo NoSQL-esque data. There are many times where this data is not "grouped" in the way you need.
+The data store here is any sort of Mongo / Elastic / Dynamo NoSQL type of data. There are many times where this data is not "grouped" in the way you need.
 
 Consider the following:
 

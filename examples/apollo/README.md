@@ -1,8 +1,8 @@
 # Apollo Data Loader Example
 
-An example of using the data loader in a GraphQL API powered by Apollo. Apollo is likely the most popular GraphQL severver client, and the data loader works well with it.
+An example of using the data loader in a GraphQL API powered by Apollo. Apollo is likely the most popular GraphQL server client, and the data loader works well with it.
 
-## Shoutout
+## Shout out
 
 Thank you Ben Awad for your video 2 years before writing this lol.
 
@@ -128,6 +128,6 @@ This does mean that subsequent queries will run your fetcher for every request.
 
 ### Caching Strategy
 
-If you provide a caching strategy, everything is up to you. For an easy way to not cache anything, simply provide your fetcher as the caching strategy. This will elimate in built caching completely.
+If you provide a caching strategy, everything is up to you. For an easy way to not cache anything, simply provide your fetcher as the caching strategy. This will eliminate in built caching completely.
 
-There are other caching strageties you can use, such as a [Redis box](../../tests/integration/redis/redisCachingStrategy.test.ts). The tool is designed to be flexible to fit your tech stack needs, while also providing a default if you don't need it.
+There are other caching strategies you can use, such as a [Redis box](../../tests/integration/redis/redisCachingStrategy.test.ts). The tool is designed to be flexible to fit your tech stack needs, while also providing a default if you don't need it.
