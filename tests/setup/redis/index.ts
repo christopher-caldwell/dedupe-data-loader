@@ -33,6 +33,9 @@ export const redisCachingStrategy: CachingStrategy<TestCacheItem> = async (keys)
     if (isKeyCached) continue
     else missingFromCacheIds.push(key)
   }
+
+  if (!missingFromCacheIds.length) return cachedItems
+
   const freshlyGatheredData = await mockFetcher(missingFromCacheIds)
   const allItemsRequested = [...cachedItems, ...freshlyGatheredData]
 
