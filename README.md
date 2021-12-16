@@ -6,6 +6,12 @@ Multi use data loader, with built in de-duped caching. This is heavily influence
 
 If you're wonder what is a data loader, the TL;DR is that it efficiently fetches your data in batches rather than sending n number of requests. For a more detailed explanation, keep reading.
 
+## Why Another Data Loader?
+
+To be short, because the one from GraphQL doesn't have the ability to inject your own caching strategy. If you wanted to use Redis with that loader, it would be more work than this. We're all interested in less work.
+
+Secondly, I personally wanted to see if I could. It's an insanely popular package, but I wanted my own done exactly the way I wanted. Also one that was natively written in TypeScript.
+
 ## Installation
 
 For the copy / paste.
