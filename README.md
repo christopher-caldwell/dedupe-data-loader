@@ -37,7 +37,7 @@ const AuthorLoader = new DataLoader({
 
 This library comes with it's own caching stragety using [node-cache](https://github.com/node-cache/node-cache). Each instance of the data loader will have it's own cache.
 
-If you have your own caching method, you can inject it into the data loader via the `cachingStrategy`. There is an example of this for [Redis]() and a [no-cache approach]() in the examples.
+If you have your own caching method, you can inject it into the data loader via the `cachingStrategy`. There is an example of this for [Redis](./tests/integration/redis/redisCachingStrategy.test.ts) and a [no-cache approach](./tests/integration/no-cache/noCache.test.ts) in the examples.
 
 ```ts
 // Using a simple fetcher, built in caching
@@ -203,7 +203,7 @@ app.get('/books', async (req, res) => {
 
 The primary usecase for a data loader is with GraphQL. However the loader, and the caching strategy can be used independently of GraphQL.
 
-For a detailed example, look at the [test for it]().
+For a detailed example, look at the [Express example](./examples/express/README.md).
 
 ```ts
 const AuthorDataLoader = new DataLoader({
@@ -218,7 +218,7 @@ const result = await AuthorDataLoader.defaultCachingStrategy(['1', '2', '3'], Au
 expect(result).toHaveLength(3)
 ```
 
-By using this, you get all the benefits of simplified, de-duped caching. This can be useful in a REST API where you're fetching a list of items that have entities on them via an ID. Checkout an [example of this](). It's not a "super clean, slick" solution, but it really helps the issue of over fetching.
+By using this, you get all the benefits of simplified, de-duped caching. This can be useful in a REST API where you're fetching a list of items that have entities on them via an ID. Checkout an [example of this](./examples/express/src/routes/book.ts). It's not a "super clean, slick" solution, but it really helps the issue of over fetching.
 
 In summary: If your list of 20 items has the same relationship ID 6 times, this tool does the work for you to not make 5 redundant requests, but rather 1 necessary request for the 6th ID so you can give all of them back to the entity without making uneccesary persistence calls.
 
