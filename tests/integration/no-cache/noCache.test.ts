@@ -7,7 +7,7 @@ describe('No Cache - Caching Strategy', () => {
   test('Providing own caching strategy without caching results in no cache', async () => {
     const noCacheCachingStrategy = jest.fn(async (ids: Key[]) => {
       expect(ids).toHaveLength(5)
-      // No caching being done in own custom `cachingStrategy` 
+      // No caching being done in own custom `cachingStrategy`
       // means there will be no caching by the loader either
       return ids.map((id) => ({ id }))
     })

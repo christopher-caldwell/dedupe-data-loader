@@ -1,6 +1,6 @@
 # Vanilla GraphQL Data Loader Example
 
-An example of using the data loader in a vanilla GraphQL API powered by Express. This is **not* using any express-graphql middleware. I't just an express server, with a single route at `/graphql`. 
+An example of using the data loader in a vanilla GraphQL API powered by Express. This is \*_not_ using any express-graphql middleware. I't just an express server, with a single route at `/graphql`.
 
 I run GraphQL in serverless environments a lot, so this is the style I use there ( without Express ). You invoke the `graphql` runner explicity which you can see in [runQuery](./src/runQuery.ts)
 
@@ -22,7 +22,6 @@ yarn start
 yarn dev
 ```
 
-
 ## Field Resolver
 
 The power of GraphQL is harnessed in a field resolver. Instead of your object needing to be the actual data, you can provide a function that will run and replace itself with the result
@@ -37,7 +36,7 @@ const book = async ({ id }) => {
   const book = await getBook(id)
   return {
     ...book,
-    author: () => getAuthor(book.authorId)
+    author: () => getAuthor(book.authorId),
   }
 }
 ```
@@ -59,7 +58,7 @@ The result to the client will be the result of `getAuthor`, as GraphQL will run 
 
 ## The Problem
 
-This is great, but what if you have 100 books? This means `getAuthor` will be ran 100 times. If you aren't preparing something to handle this, that means 100 queries to you DB. 
+This is great, but what if you have 100 books? This means `getAuthor` will be ran 100 times. If you aren't preparing something to handle this, that means 100 queries to you DB.
 
 ## The Solution
 
@@ -71,7 +70,7 @@ const book = async ({ id }, { AuthorLoader }) => {
   const book = await getBook(id)
   return {
     ...book,
-    author: () => AuthorLoader.load(book.authorId)
+    author: () => AuthorLoader.load(book.authorId),
   }
 }
 ```

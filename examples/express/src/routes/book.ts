@@ -6,10 +6,8 @@ import { Express } from 'express'
  */
 import { AuthorLoader, BookLoader, books } from '../db'
 
-
 export const bookRoutes = (app: Express): void => {
   app.get('/books', async (_, res) => {
-
     // Optionally, you could cache the books here:
     // BookLoader.mSet(books)
 

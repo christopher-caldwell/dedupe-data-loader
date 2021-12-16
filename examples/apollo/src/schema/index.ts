@@ -16,4 +16,6 @@ const Queries = `#graphql
 
 const schemas = stitchSchema(AuthorSchema, BookSchema)
 
-export const schema = gql`${stitchSchema(schemas, Queries)}`
+export const schema = gql`
+  ${stitchSchema(schemas, Queries)}
+`

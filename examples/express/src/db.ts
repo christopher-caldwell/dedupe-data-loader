@@ -6,7 +6,7 @@ export * from '../../db/seed'
 export const AuthorLoader = new DataLoader({
   fetcher: async (ids) => {
     console.log('[Author Fetcher]: # of IDs', ids.length)
-    // Normally this would be a call to Mongo/Dynamo/Elastic. TODO: Make a local Mongo setup. 
+    // Normally this would be a call to Mongo/Dynamo/Elastic. TODO: Make a local Mongo setup.
     return authors.filter(({ id: authorId }) => ids.includes(authorId))
   },
 })
@@ -14,7 +14,7 @@ export const AuthorLoader = new DataLoader({
 export const BookLoader = new DataLoader({
   fetcher: async (ids) => {
     console.log('[Book Fetcher]: # of IDs', ids.length)
-    // Normally this would be a call to Mongo/Dynamo/Elastic. TODO: Make a local Mongo setup. 
+    // Normally this would be a call to Mongo/Dynamo/Elastic. TODO: Make a local Mongo setup.
     return books.filter(({ id: bookId }) => ids.includes(bookId))
   },
 })

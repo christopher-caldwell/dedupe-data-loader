@@ -79,7 +79,7 @@ export class DataLoader<TData extends { id: Key }> {
     return Object.values(mgetKeyResponse)
   }
 
-  all(){
+  all() {
     const allKeys = this.DataCache.keys()
     return this.mGet(allKeys)
   }

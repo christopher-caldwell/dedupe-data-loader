@@ -5,11 +5,11 @@ export * from './shared'
 
 export const resolvers = {
   Book: {
-    author: authorFieldResolver
+    author: authorFieldResolver,
   },
   Query: {
     ...bookResolvers,
-    authors, 
+    authors,
     author,
-  }
-};
+  },
+}

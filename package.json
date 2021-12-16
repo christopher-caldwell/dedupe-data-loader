@@ -12,7 +12,10 @@
     "test:integration": "jest integration --detectOpenHandles",
     "test:graphql": "jest integration/graphql --detectOpenHandles",
     "test:all": "jest",
-    "build": "microbundle --target node --compress --tsconfig tsconfig.build.json"
+    "build": "microbundle --target node --compress --tsconfig tsconfig.build.json",
+    "release": "standard-version",
+    "publish-release": "git push --follow-tags origin master && yarn publish",
+    "publish:version": "sh scripts/publish.sh"
   },
   "dependencies": {
     "node-cache": "^5.1.2"
@@ -31,6 +34,7 @@
     "microbundle": "^0.13.3",
     "prettier": "^2.5.1",
     "rc": "^1.2.8",
+    "standard-version": "^9.3.2",
     "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
     "tscpaths": "^0.0.9",

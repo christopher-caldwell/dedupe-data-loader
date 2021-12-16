@@ -10,7 +10,7 @@ app.use(express.json())
 
 app.post('/graphql', async (req, res) => {
   const { query, variables, operationName } = req.body
-  // Express is not great at handling async errors. 
+  // Express is not great at handling async errors.
   // This WILL crash the app, even with a try/cacth if there are SQL errors.
   try {
     const result = await runQuery(query, variables, operationName)

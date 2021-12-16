@@ -17,6 +17,6 @@
       "@setup/*": ["../tests/setup/*"]
     }
   },
-  "include": ["src", "tests", "examples"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules"]
 }
