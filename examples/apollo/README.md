@@ -2,6 +2,12 @@
 
 An example of using the data loader in a GraphQL API powered by Apollo. Apollo is likely the most popular GraphQL severver client, and the data loader works well with it.
 
+## Shoutout
+
+Thank you Ben Awad for your video 2 years before writing this lol.
+
+- Ben's data loader [example repo](https://github.com/benawad/graphql-n-plus-one-example)
+
 ## Data Store
 
 The app uses Knex to reach an SQL Lite db stored in a file. This simulates a hosted DB somewhere, that you are making queries to.
