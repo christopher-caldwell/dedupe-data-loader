@@ -29,4 +29,4 @@ All notable changes to this project will be documented in this file. See [standa
 * Linting ([a7c9a94](https://github.com/christopher-caldwell/dedupe-data-loader/commit/a7c9a94ac113bbb64f2d81818c82b3b5cf8bd70e))
 * Only sending a list of unique IDs to  the fetcher ([c561749](https://github.com/christopher-caldwell/dedupe-data-loader/commit/c5617490d482a1fa1d69af7c37dcb8718f9b2dc7))
 * Package pills ([109d2e3](https://github.com/christopher-caldwell/dedupe-data-loader/commit/109d2e37284fd66100020e9f4bf127715669baff))
-* shoutout ben ([c81059e](https://github.com/christopher-caldwell/dedupe-data-loader/commit/c81059e79b775b1194a0432fb89786ac5f8a57b5))
+* shout out ben ([c81059e](https://github.com/christopher-caldwell/dedupe-data-loader/commit/c81059e79b775b1194a0432fb89786ac5f8a57b5))
