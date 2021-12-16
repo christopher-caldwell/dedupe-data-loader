@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.2...v0.0.3) (2021-12-16)
+
+
+### Bug Fixes
+
+* Spelling ([2ead524](https://github.com/christopher-caldwell/dedupe-data-loader/commit/2ead524966e0504e1da60e51c9d0d4bbce722260))
+* Spelling ([c19baf3](https://github.com/christopher-caldwell/dedupe-data-loader/commit/c19baf300e91cf190f68a951e8dde7ce76da1be0))
+
 ### 0.0.2 (2021-12-16)
 
 
