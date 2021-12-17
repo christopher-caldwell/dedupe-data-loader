@@ -10,3 +10,9 @@ services:
       options:
         max-size: '1m'
         max-file: '3'
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
