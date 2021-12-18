@@ -11,12 +11,12 @@ export const bookRoutes = (app: Express): void => {
     // Optionally, you could cache the books here:
     // BookLoader.mSet(books)
 
-    const authorPromises = books.map(({ authorId }) => AuthorLoader.load(authorId))
+    const authorPromises = books.map(({ author_id }) => AuthorLoader.load(author_id))
     const authors = await Promise.all(authorPromises)
 
     const booksWithAuthors = books.map((book) => ({
       ...book,
-      author: authors.find(({ id: authorId }) => authorId === book.authorId),
+      author: authors.find(({ id: authorId }) => authorId === book.author_id),
     }))
 
     res.send(booksWithAuthors)
@@ -26,7 +26,7 @@ export const bookRoutes = (app: Express): void => {
     const id = parseInt(req.params.id || '0')
     const book = await BookLoader.load(id)
     if (!book) return res.sendStatus(404)
-    const author = await AuthorLoader.load(book.authorId)
+    const author = await AuthorLoader.load(book.author_id)
     res.send({ ...book, author })
   })
 }

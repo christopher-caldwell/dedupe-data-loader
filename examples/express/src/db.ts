@@ -1,7 +1,7 @@
 import { DataLoader } from '@caldwell619/data-loader'
 
-import { authors, books } from '../../db/seed'
-export * from '../../db/seed'
+import { authors, books } from '../../apollo/src/db'
+export * from '../../apollo/src/db'
 
 export const AuthorLoader = new DataLoader({
   fetcher: async (ids) => {

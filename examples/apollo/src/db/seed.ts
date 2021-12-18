@@ -34,7 +34,7 @@ export const authors: Author[] = [
 export const books: BookData[] = [
   {
     id: 1,
-    title: "Sorccer's Stone",
+    title: "Sorcerer's Stone",
     author_id: 1,
   },
   {

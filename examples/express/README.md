@@ -2,6 +2,10 @@
 
 An example of using the data loader in a traditional REST API powered by Express.
 
+## Benefit
+
+To be blunt, there is a good amount of overhead with this. The benefit here is caching. With the extra step of using the loader, you get built in de-duped caching. If you're already caching, there is little benefit for you to use this with a traditional REST API. This is roughly the same amount of work as just doing these things manually.
+
 ## Data Store
 
 The data store here is any sort of Mongo / Elastic / Dynamo NoSQL type of data. There are many times where this data is not "grouped" in the way you need.
