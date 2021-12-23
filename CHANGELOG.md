@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.3...v0.0.4) (2021-12-23)
+
+
+### Bug Fixes
+
+* Adding repository link to package.json ([21f2171](https://github.com/christopher-caldwell/dedupe-data-loader/commit/21f2171ca602e8c3dfbf0d89b739fb1ee9c0669b))
+* Correcting the data types ([0fd5ed9](https://github.com/christopher-caldwell/dedupe-data-loader/commit/0fd5ed90d8e7849b30c05f18877e818081814c7f))
+* Returning early is cached is sufficient ([b7186e3](https://github.com/christopher-caldwell/dedupe-data-loader/commit/b7186e391b8dfb856b9cd59b8a1a386fa35e82b7))
+
 ### [0.0.3](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.2...v0.0.3) (2021-12-16)
 
 
