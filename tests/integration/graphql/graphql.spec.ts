@@ -1,4 +1,4 @@
-import { runQuery, BookQuery, BooksQuery, authorFetcher, AuthorDataLoader, Book } from '@setup/graphql'
+import { runQuery, BookQuery, BooksQuery, authorFetcher, AuthorLoader, BookLoader, Book } from '@setup/graphql'
 
 type BookQueryResponse = {
   book: Book
@@ -8,7 +8,8 @@ type BooksQueryResponse = {
 }
 
 beforeEach(() => {
-  AuthorDataLoader.clear()
+  AuthorLoader.clear()
+  BookLoader.clear()
 })
 
 describe('Vanilla GraphQL', () => {
@@ -17,7 +18,6 @@ describe('Vanilla GraphQL', () => {
     const { data: firstCall } = await runQuery<BookQueryResponse>(BookQuery, { id: 1 })
     expect(authorFetcher).toBeCalledTimes(1)
     expect(firstCall?.book?.author?.id).toBe(1)
-
     const { data: lastCall } = await runQuery<BookQueryResponse>(BookQuery, { id: 1 })
     expect(authorFetcher).toBeCalledTimes(1)
     expect(lastCall?.book?.author?.id).toBe(1)

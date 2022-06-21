@@ -1,7 +1,7 @@
 export const BookSchema = `#graphql
 type Book {
   id: Int!
-  name: String!
+  title: String!
   author: Author!
 }
 `
