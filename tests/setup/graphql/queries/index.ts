@@ -20,7 +20,7 @@ export const BookQuery = `#graphql
 query Book($id: Int!) {
   book(id: $id) {
     id
-    name
+    title
     author {
       id
       name
@@ -33,7 +33,7 @@ export const BooksQuery = `#graphql
 query Books {
   books {
     id
-    name
+    title
     author {
       id
       name
