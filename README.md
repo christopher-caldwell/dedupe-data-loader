@@ -131,7 +131,7 @@ This is an additional layer of overhead, and it's up to your use case whether or
 
 You **cannot** provide nothing to the constructor. If you omit both the `fetcher` and the `cachingStrategy`, an error will be thrown.
 
-This is explicitly called out, because I am struggling with the types for this. If you provide a `fetcher`, you should not be providing a `cachingStrategy` and vice versa. They are an either / or, rather than both.
+If you provide a `fetcher`, you should not be providing a `cachingStrategy` and vice versa. They are an either / or, rather than both.
 
 If this is ignored and both are provided, the `cachingStrategy` will take priority.
 
