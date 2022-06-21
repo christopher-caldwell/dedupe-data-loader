@@ -16,8 +16,8 @@ describe('Vanilla GraphQL', () => {
   test('Running a single entity query runs the fetcher once, then does a cache grab on the second request', async () => {
     expect.assertions(4)
     const { data: firstCall } = await runQuery<BookQueryResponse>(BookQuery, { id: 1 })
-    expect(firstCall?.book?.author?.id).toBe(1)
     expect(authorFetcher).toBeCalledTimes(1)
+    expect(firstCall?.book?.author?.id).toBe(1)
     const { data: lastCall } = await runQuery<BookQueryResponse>(BookQuery, { id: 1 })
     expect(authorFetcher).toBeCalledTimes(1)
     expect(lastCall?.book?.author?.id).toBe(1)
