@@ -55,6 +55,32 @@ const AuthorLoader = new DataLoader({
 })
 ```
 
+#### Built-in Strategies
+
+Some strategies are provided outside of the main bundle. The most common use case being Redis. Below is an example of how to use the built-in strategy with the loader.
+
+<details>
+  <summary>Redis</summary>
+
+  
+  ```ts
+import { redisCachingStrategy } from '@caldwell619/dist/caching-strategies/redis'
+import RedisClient from 'ioredis'
+
+const Redis = new RedisClient()
+const getByIds = async (ids: Key[]): Promise<MyItem[]> => {
+  // get items from DB based on IDs array provided
+  return itemsFromDb
+}
+
+const RedisEnabledDataLoader = new DataLoader({
+  cachingStrategy(keys) {
+    return redisCachingStrategy(keys, Redis, getByIds)
+  },
+})
+  ```
+</details>
+
 ### Manipulating the Built In Cache
 
 There are at least 2 ways to approach using the built in caching. You can instantiate the loader each request to ensure there is no stale data, or you can do it outside of the request and manipulate the cache when necessary

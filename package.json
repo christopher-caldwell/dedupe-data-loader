@@ -20,16 +20,20 @@
   "dependencies": {
     "node-cache": "^5.1.2"
   },
+  "optionalDependencies": {
+    "ioredis": ">=4"
+  },
   "devDependencies": {
     "@types/ioredis": "^4.28.3",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
+    "adze": "^1.9.1",
     "eslint": "^8.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "graphql": "^16.1.0",
-    "ioredis": "^4.28.2",
+    "ioredis": "^4.28.5",
     "jest": "^27.4.4",
     "microbundle": "^0.13.3",
     "prettier": "^2.5.1",
