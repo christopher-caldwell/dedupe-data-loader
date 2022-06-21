@@ -21,6 +21,7 @@ describe('Default Caching Strategy', () => {
   })
   test('Not providing a fetcher nor a caching strategy throws an error', () => {
     const setup = () => {
+      //@ts-ignore
       new DataLoader({})
     }
     expect(setup).toThrowError()
