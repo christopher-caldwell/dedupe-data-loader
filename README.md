@@ -62,8 +62,7 @@ Some strategies are provided outside of the main bundle. The most common use cas
 <details>
   <summary>Redis</summary>
 
-  
-  ```ts
+```ts
 import { redisCachingStrategy } from '@caldwell619/dist/caching-strategies/redis'
 import RedisClient from 'ioredis'
 
@@ -78,7 +77,8 @@ const RedisEnabledDataLoader = new DataLoader({
     return redisCachingStrategy(keys, Redis, getByIds)
   },
 })
-  ```
+```
+
 </details>
 
 ### Manipulating the Built In Cache
