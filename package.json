@@ -3,7 +3,6 @@
   "version": "0.0.5",
   "description": "De-duping data loader for fetching relationships",
   "scripts": {
-    "start": "ts-node src/index.ts",
     "lint": "eslint --ext .tsx,.ts,.js src",
     "type-check": "tsc --noEmit",
     "format": "prettier --write src && prettier --write tests && prettier --write examples",
@@ -20,7 +19,7 @@
   "dependencies": {
     "node-cache": "^5.1.2"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "ioredis": ">=4"
   },
   "devDependencies": {
@@ -42,7 +41,7 @@
     "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
     "tscpaths": "^0.0.9",
-    "typescript": "^4.5.3"
+    "typescript": "^4.9.5"
   },
   "repository": {
     "type": "git",
