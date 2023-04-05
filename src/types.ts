@@ -40,6 +40,7 @@ export type DataLoaderArgs<TData extends { id: TKey }, TKey = Key> = {
    * @default 10ms
    */
   delayInterval?: number
+  bufferEncoding?: BufferEncoding
 } & ExclusiveUnion<FetcherPart<TData, TKey> | CachingStrategyPart<TData, TKey>>
 
 export type Key = string | number | Buffer

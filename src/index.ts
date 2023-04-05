@@ -11,25 +11,29 @@ export class DataLoader<TData extends { id: TKey }, TKey = Key> {
   runner: NodeJS.Timeout | undefined
   dataFetchPromises: DataFetchPromise<TData>[] = []
   delayInterval: number = 10
+  bufferEncoding?: BufferEncoding
 
-  constructor({ cachingStrategy, fetcher, cacheOptions, delayInterval }: DataLoaderArgs<TData, TKey>) {
+  constructor({ cachingStrategy, fetcher, cacheOptions, delayInterval, bufferEncoding }: DataLoaderArgs<TData, TKey>) {
     if (!fetcher && !cachingStrategy)
       throw new Error('You must provide either a fetcher or a cachingStrategy if you want a custom solution.')
     this.cachingStrategy = cachingStrategy
     this.fetcher = fetcher
     this.DataCache = new Cache(cacheOptions)
+    this.bufferEncoding = bufferEncoding
     this.defaultCacheTtl = cacheOptions?.stdTTL || Number(process.env.DDL_DEFAULT_CACHE_TTL || Infinity)
     if (delayInterval) this.delayInterval = delayInterval
   }
 
   handleKeyIn(key: TKey): CacheKey {
     const isBuffer = Buffer.isBuffer(key)
-    return isBuffer ? key.toString() : (key as CacheKey)
+    return isBuffer ? key.toString(this.bufferEncoding) : (key as CacheKey)
   }
   /** Handles the equality check on Buffer keys */
   checkIfKeyEqual(key: CacheKey, keyToCompare: TKey) {
     const shouldCompareBuffer = Buffer.isBuffer(keyToCompare) && typeof key === 'string'
-    return shouldCompareBuffer ? Buffer.compare(Buffer.from(key), keyToCompare) === 0 : key === keyToCompare
+    return shouldCompareBuffer
+      ? Buffer.compare(Buffer.from(key, this.bufferEncoding), keyToCompare) === 0
+      : key === keyToCompare
   }
 
   /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values. */
