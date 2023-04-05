@@ -1,6 +1,4 @@
-import { Key } from 'node-cache'
-
-import { DataLoader } from '@/index'
+import { Key, DataLoader } from '@/index'
 import { TestCacheItem } from '@setup/index'
 
 describe('No Cache - Caching Strategy', () => {

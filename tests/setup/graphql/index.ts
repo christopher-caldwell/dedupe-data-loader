@@ -1,7 +1,6 @@
 import { ExecutionResult, graphql } from 'graphql'
-import { Key } from 'node-cache'
 
-import { DataLoader } from '@/index'
+import { Key, DataLoader } from '@/index'
 
 import { schema } from './schema'
 import { Author, authors, BookData, books } from './data'
