@@ -1,48 +1,44 @@
-import Cache, { Key as CacheKey, ValueSetItem } from 'node-cache'
+import { LRU_TTL } from './cache'
+import { CachingStrategy, Fetcher, DataFetchPromise, DataLoaderArgs } from './types'
 
-import { Key, CachingStrategy, Fetcher, DataFetchPromise, DataLoaderArgs } from './types'
-
-export class DataLoader<TData extends { id: TKey }, TKey = Key> {
+export class DataLoader<TData extends { id: TKey }, TKey = TData['id']> {
   cachingStrategy: CachingStrategy<TData, TKey> | undefined
   fetcher: Fetcher<TData, TKey> | undefined
-  DataCache: Cache
+  DataCache: LRU_TTL<TKey, TData>
   defaultCacheTtl: number
   keysToFetch: TKey[] = []
   runner: NodeJS.Timeout | undefined
-  dataFetchPromises: DataFetchPromise<TData>[] = []
+  dataFetchPromises: DataFetchPromise<TData, TKey>[] = []
   delayInterval: number = 10
+  keyConverter: (key: Buffer | number) => string
 
-  constructor({ cachingStrategy, fetcher, cacheOptions, delayInterval }: DataLoaderArgs<TData, TKey>) {
+  constructor({ cachingStrategy, fetcher, cacheOptions, delayInterval, keyConverter }: DataLoaderArgs<TData, TKey>) {
     if (!fetcher && !cachingStrategy)
       throw new Error('You must provide either a fetcher or a cachingStrategy if you want a custom solution.')
     this.cachingStrategy = cachingStrategy
     this.fetcher = fetcher
-    this.DataCache = new Cache(cacheOptions)
-    this.defaultCacheTtl = cacheOptions?.stdTTL || Number(process.env.DDL_DEFAULT_CACHE_TTL || Infinity)
+    this.keyConverter = keyConverter || defaultKeyConverter
+    this.DataCache = new LRU_TTL(cacheOptions)
+    this.defaultCacheTtl = Number(cacheOptions?.ttl) || Number(process.env.DDL_DEFAULT_CACHE_TTL || Infinity)
     if (delayInterval) this.delayInterval = delayInterval
   }
 
-  handleKeyIn(key: TKey): CacheKey {
-    const isBuffer = Buffer.isBuffer(key)
-    return isBuffer ? key.toString() : (key as CacheKey)
-  }
   /** Handles the equality check on Buffer keys */
-  checkIfKeyEqual(key: CacheKey, keyToCompare: TKey) {
+  checkIfKeyEqual(key: TKey, keyToCompare: TKey) {
     const shouldCompareBuffer = Buffer.isBuffer(keyToCompare) && typeof key === 'string'
     return shouldCompareBuffer ? Buffer.compare(Buffer.from(key), keyToCompare) === 0 : key === keyToCompare
   }
 
   /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values. */
-  async load(incomingKey: TKey) {
-    const key = this.handleKeyIn(incomingKey)
-    const potentialItem = this.DataCache.get<TData>(key)
+  async load(key: TKey) {
+    const potentialItem = this.DataCache.get(key)
     if (potentialItem) return potentialItem
 
     const dataFetchPromise = new Promise<TData>((resolve, reject) => {
       this.dataFetchPromises.push({ key, resolve, reject })
     })
 
-    this.keysToFetch.push(incomingKey)
+    this.keysToFetch.push(key)
     if (this.runner) clearTimeout(this.runner)
     this.runner = setTimeout(async () => {
       // TODO consider uniqueness here - test out multiple keys
@@ -63,64 +59,53 @@ export class DataLoader<TData extends { id: TKey }, TKey = Key> {
     return this.defaultCachingStrategy(keys)
   }
 
-  /** Takes an ID enabled object and returns the data in a version that can be cached */
-  formatDataIntoCache = (data: TData, ttl: number): ValueSetItem => {
-    const key = this.handleKeyIn(data.id)
-    return {
-      key,
-      val: data,
-      ttl,
-    }
-  }
-
   //<------ BEGIN OWN CACHE METHODS - NOT USED IF USING OWN CACHING STRATEGY ----> //
 
-  mSet(data: TData[], ttl: number = this.defaultCacheTtl) {
-    const dataToBeCached = data.map((item) => this.formatDataIntoCache(item, ttl))
-    return this.DataCache.mset(dataToBeCached)
+  mSet(data: TData[], ttl = this.defaultCacheTtl) {
+    data.forEach((item) => {
+      this.DataCache.set(item.id, item, ttl)
+    })
   }
 
-  set(incomingKey: TKey, data: TData, ttl: number = this.defaultCacheTtl) {
-    const key = this.handleKeyIn(incomingKey)
+  set(key: TKey, data: TData, ttl = this.defaultCacheTtl) {
     return this.DataCache.set(key, data, ttl)
   }
 
-  mGetKeys(incomingKeys: TKey[]) {
-    const keys = incomingKeys.map((key) => this.handleKeyIn(key))
-    return this.DataCache.mget<TData>(keys)
+  peekKeys(keys: TKey[]) {
+    const successfulKeys = new Map<TKey, true>()
+    for (const key of keys) {
+      const isThere = this.DataCache.peek(key)
+      if (isThere) successfulKeys.set(key, true)
+    }
+    return successfulKeys
   }
 
   mGet(keys: TKey[]) {
-    const mgetKeyResponse = this.mGetKeys(keys)
-    return Object.values(mgetKeyResponse)
-  }
-
-  /** Returns all the cached data in this cache */
-  all() {
-    const allKeys = this.DataCache.keys()
-    return this.mGet(allKeys as TKey[])
+    const results: TData[] = []
+    for (const key of keys) {
+      const hit = this.DataCache.get(key) as TData
+      if (hit) results.push(hit)
+    }
+    return results
   }
 
   /** Deletes all the keys in this cache  */
   clear() {
-    const allKeys = this.DataCache.keys()
-    return this.DataCache.del(allKeys)
+    return this.DataCache.clearAll()
   }
 
   /** Removes a key from the built in cache. Will have no effect if using your own `cachingStrategy` */
-  delete(incomingKey: TKey) {
-    const key = this.handleKeyIn(incomingKey)
-    return this.DataCache.del(key)
+  delete(key: TKey) {
+    return this.DataCache.delete(key)
   }
 
   /** Returns a list of keys that are not in the cache, out of the list provided. */
   getListOfNonCachedKeys = (keys: TKey[]): TKey[] => {
     const nonCachedKeys: TKey[] = []
-    const cachedKeys = this.mGetKeys(keys)
-    for (const incomingKey of keys) {
-      const key = this.handleKeyIn(incomingKey)
+    const cachedKeys = this.peekKeys(keys)
+    for (const key of keys) {
       // TODO: need to do a check on Buffer here to hand to the fetcher.
-      if (!cachedKeys[key]) nonCachedKeys.push(incomingKey as TKey)
+      if (!cachedKeys.get(key)) nonCachedKeys.push(key)
     }
 
     return nonCachedKeys
@@ -136,6 +121,10 @@ export class DataLoader<TData extends { id: TKey }, TKey = Key> {
     this.mSet(freshlyFetchedData)
     return [...cachedData, ...freshlyFetchedData]
   }
+}
+
+const defaultKeyConverter = (key: Buffer | number) => {
+  return key.toString()
 }
 
 export * from './types'

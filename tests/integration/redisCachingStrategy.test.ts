@@ -1,12 +1,12 @@
 import { DataLoader } from '@/index'
 import { redisCachingStrategy } from '@/caching-strategies/redis'
-import { clear, mockFetcher, Redis } from '@setup/index'
+import { clear, mockFetcher, Redis, TestCacheItem } from '@setup/index'
 
 beforeEach(async () => {
   await clear()
 })
 
-const TestDataLoader = new DataLoader({
+const TestDataLoader = new DataLoader<TestCacheItem>({
   cachingStrategy(keys) {
     return redisCachingStrategy(keys, Redis, mockFetcher)
   },

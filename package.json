@@ -1,15 +1,15 @@
 {
   "name": "@caldwell619/data-loader",
-  "version": "0.0.7",
+  "version": "0.0.8-alpha.1",
   "description": "De-duping data loader for fetching relationships",
   "scripts": {
     "lint": "eslint --ext .tsx,.ts,.js src",
     "type-check": "tsc --noEmit",
     "format": "prettier --write src && prettier --write tests && prettier --write examples",
     "pretest": "tsc --noEmit",
-    "test:unit": "jest unit --detectOpenHandles",
-    "test:integration": "jest integration --detectOpenHandles",
-    "test:graphql": "jest integration/graphql --detectOpenHandles",
+    "test:unit": "jest unit",
+    "test:integration": "jest integration",
+    "test:graphql": "jest integration/graphql",
     "test:all": "jest",
     "build": "microbundle --target node --compress --tsconfig tsconfig.build.json",
     "release": "standard-version",
@@ -17,14 +17,17 @@
     "publish:version": "sh scripts/publish.sh"
   },
   "dependencies": {
+    "lru-ttl-cache": "^2.4.5",
     "node-cache": "^5.1.2"
   },
   "peerDependencies": {
     "ioredis": ">=4"
   },
   "devDependencies": {
+    "@types/bytes": "^3.1.1",
     "@types/ioredis": "^4.28.3",
-    "@types/jest": "^27.0.3",
+    "@types/jest": "^29.5.0",
+    "@types/ms": "^0.7.31",
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
@@ -33,13 +36,12 @@
     "eslint-plugin-prettier": "^4.0.0",
     "graphql": "^16.1.0",
     "ioredis": "^4.28.5",
-    "jest": "^27.4.4",
+    "jest": "^29.5.0",
     "microbundle": "^0.13.3",
     "prettier": "^2.5.1",
-    "rc": "^1.2.8",
     "standard-version": "^9.3.2",
-    "ts-jest": "^27.1.1",
-    "ts-node": "^10.4.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
     "tscpaths": "^0.0.9",
     "typescript": "^4.9.5"
   },

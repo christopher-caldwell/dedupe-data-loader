@@ -12,7 +12,7 @@ export const TestDataLoader = new DataLoader<TestCacheItem>({
   fetcher: mockFetcher,
 })
 
-export const BufferDataLoader = new DataLoader<BufferTestCacheItem, Buffer>({
+export const BufferDataLoader = new DataLoader<BufferTestCacheItem>({
   fetcher: jest.fn(async (ids) => {
     return ids.map((id) => ({ id }))
   }),
@@ -27,4 +27,5 @@ export type BufferTestCacheItem = {
 
 beforeEach(() => {
   TestDataLoader.clear()
+  BufferDataLoader.clear()
 })

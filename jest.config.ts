@@ -1,4 +1,6 @@
-const config = {
+import { Config } from 'jest'
+
+const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleNameMapper: {
@@ -10,4 +12,4 @@ const config = {
   collectCoverageFrom: ['<rootDir>/src/*'],
 }
 
-module.exports = config
+export default config
