@@ -1,4 +1,4 @@
-import Cache, { Key, ValueSetItem, Options as CacheOptions } from 'node-cache'
+import { Options as CacheOptions } from 'node-cache'
 
 type AllKeys<T> = T extends unknown ? keyof T : never
 type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
@@ -41,6 +41,8 @@ export type DataLoaderArgs<TData extends { id: Key }> = {
    */
   delayInterval?: number
 } & ExclusiveUnion<FetcherPart<TData> | CachingStrategyPart<TData>>
+
+export type Key = string | number | Buffer
 
 /** The method in which cached values are retrieved. This defaults to `node-cache`, but can be substituted for Redis, or whatever other means you wish.  */
 export type CachingStrategy<TData extends { id: Key }> = (keys: Key[]) => Promise<TData[]>

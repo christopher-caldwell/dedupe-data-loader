@@ -1,6 +1,4 @@
-import { Key } from 'node-cache'
-
-import { DataLoader } from '@/data-load'
+import { Key, DataLoader } from '@/index'
 import { TestDataLoader, mockFetcher, TestCacheItem } from '@setup/index'
 
 describe('Batching', () => {

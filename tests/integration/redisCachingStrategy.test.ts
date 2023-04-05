@@ -1,11 +1,21 @@
-import { DataLoader } from '@/data-load'
-import { mockFetcher } from '@setup/index'
+import { DataLoader } from '@/index'
+import { redisCachingStrategy } from '@/caching-strategies/redis'
+import { clear, mockFetcher, Redis } from '@setup/index'
 
-const TestDataLoader = new DataLoader({
-  fetcher: mockFetcher,
+beforeEach(async () => {
+  await clear()
 })
 
-describe('Default Caching Strategy', () => {
+const TestDataLoader = new DataLoader({
+  cachingStrategy(keys) {
+    return redisCachingStrategy(keys, Redis, mockFetcher)
+  },
+})
+
+describe('Redis Caching Strategy', () => {
+  afterAll(async () => {
+    await Redis.quit()
+  })
   test('Requesting 5 separate IDs results in one invocation of the fetcher', async () => {
     const result = await Promise.all([
       TestDataLoader.load('1'),
@@ -18,13 +28,5 @@ describe('Default Caching Strategy', () => {
     expect(result[0].id).toBe('1')
     expect(mockFetcher).toHaveBeenCalledTimes(1)
     expect.assertions(2)
-  })
-  test('Not providing a fetcher nor a caching strategy throws an error', () => {
-    const setup = () => {
-      //@ts-ignore
-      new DataLoader({})
-    }
-    expect(setup).toThrowError()
-    expect.assertions(1)
   })
 })
