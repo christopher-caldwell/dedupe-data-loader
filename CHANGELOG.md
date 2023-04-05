@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.5...v0.0.6) (2023-04-05)
+
+
+### Features
+
+* Allowing keys to be typed ([#13](https://github.com/christopher-caldwell/dedupe-data-loader/issues/13)) ([1594dae](https://github.com/christopher-caldwell/dedupe-data-loader/commit/1594dae5afc294e4c3d213f67d745b36fa83f61e))
+
+
+### Bug Fixes
+
+* Updating TS version ([f8b5f8d](https://github.com/christopher-caldwell/dedupe-data-loader/commit/f8b5f8da8eebe21941a8e834a1802fb84f7b3346))
+
 ### [0.0.5](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.4...v0.0.5) (2023-04-05)
 
 
