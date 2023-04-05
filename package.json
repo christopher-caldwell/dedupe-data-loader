@@ -1,6 +1,6 @@
 {
   "name": "@caldwell619/data-loader",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "De-duping data loader for fetching relationships",
   "scripts": {
     "lint": "eslint --ext .tsx,.ts,.js src",
