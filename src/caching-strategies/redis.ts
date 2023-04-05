@@ -1,5 +1,6 @@
-import { Key } from 'node-cache'
 import type { Redis } from 'ioredis'
+
+import type { Key } from '../types'
 
 /** Checks Redis for the all of the requested IDs, then fetches the ones that are not cached. Caches them on the way out  */
 export const redisCachingStrategy = async <TData extends { id: Key }>(
