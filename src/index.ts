@@ -26,13 +26,14 @@ export class DataLoader<TData extends { id: Key }> {
     const isBuffer = Buffer.isBuffer(key)
     return isBuffer ? key.toString() : key
   }
-  handleKeyOut(key: Key, shouldBeBuffer: boolean) {
-    return shouldBeBuffer ? Buffer.from(key as string) : key
+  /** Handles the equality check on Buffer keys */
+  checkIfKeyEqual(key: Key, keyToCompare: Key) {
+    const shouldCompareBuffer = Buffer.isBuffer(keyToCompare) && typeof key === 'string'
+    return shouldCompareBuffer ? Buffer.compare(Buffer.from(key), keyToCompare) === 0 : key === keyToCompare
   }
 
   /** Batches calls into a queue, and invokes the fetcher once with the culmination of the necessary values. */
   async load(incomingKey: Key) {
-    const isBuffer = Buffer.isBuffer(incomingKey)
     const key = this.handleKeyIn(incomingKey)
     const potentialItem = this.DataCache.get<TData>(key)
     if (potentialItem) return potentialItem
@@ -41,14 +42,14 @@ export class DataLoader<TData extends { id: Key }> {
       this.dataFetchPromises.push({ key, resolve, reject })
     })
 
-    this.keysToFetch.push(key)
+    this.keysToFetch.push(incomingKey)
     if (this.runner) clearTimeout(this.runner)
     this.runner = setTimeout(async () => {
       // TODO consider uniqueness here - test out multiple keys
       const items = await this.fetch([...new Set(this.keysToFetch)])
       this.dataFetchPromises.forEach(({ key, resolve, reject }) => {
-        const itemToResolve = items.find(({ id: keyItem }) => keyItem === key)
-        if (itemToResolve) resolve({ ...itemToResolve, id: this.handleKeyOut(itemToResolve.id, isBuffer) } as TData)
+        const itemToResolve = items.find(({ id }) => this.checkIfKeyEqual(key, id))
+        if (itemToResolve) resolve(itemToResolve)
         else reject(`Item ${key} was not found`)
       })
     }, 10)
@@ -114,11 +115,12 @@ export class DataLoader<TData extends { id: Key }> {
 
   /** Returns a list of keys that are not in the cache, out of the list provided. */
   getListOfNonCachedKeys = (keys: Key[]): Key[] => {
-    const nonCachedKeys = []
+    const nonCachedKeys: Key[] = []
     const cachedKeys = this.mGetKeys(keys)
     for (const incomingKey of keys) {
       const key = this.handleKeyIn(incomingKey)
-      if (!cachedKeys[key]) nonCachedKeys.push(key)
+      // TODO: need to do a check on Buffer here to hand to the fetcher.
+      if (!cachedKeys[key]) nonCachedKeys.push(incomingKey)
     }
 
     return nonCachedKeys
