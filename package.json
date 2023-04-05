@@ -1,6 +1,6 @@
 {
   "name": "@caldwell619/data-loader",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "De-duping data loader for fetching relationships",
   "scripts": {
     "start": "ts-node src/index.ts",

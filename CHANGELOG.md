@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.4...v0.0.5) (2023-04-05)
+
+
+### Features
+
+* Adding caching strategies ([#4](https://github.com/christopher-caldwell/dedupe-data-loader/issues/4)) ([bd4bfec](https://github.com/christopher-caldwell/dedupe-data-loader/commit/bd4bfec822e33ed9334fc23f745338960b7926e6))
+* Enhancing types to prevent using a fetcher and a caching strategy ([#8](https://github.com/christopher-caldwell/dedupe-data-loader/issues/8)) ([67171dc](https://github.com/christopher-caldwell/dedupe-data-loader/commit/67171dc19ad33f4bbdc30d01437a486b6db1f597))
+
+
+### Bug Fixes
+
+* Fixing GraphQL tests ([#6](https://github.com/christopher-caldwell/dedupe-data-loader/issues/6)) ([c313c7f](https://github.com/christopher-caldwell/dedupe-data-loader/commit/c313c7f543775d2b88b603eb0bdde4400896d3fa))
+* Formatting ([579c52b](https://github.com/christopher-caldwell/dedupe-data-loader/commit/579c52b858ab030701bc8bb8c86ca2cb92f9df36))
+* Types in tests ([f292d7f](https://github.com/christopher-caldwell/dedupe-data-loader/commit/f292d7f0b971171f9eff84248147020fc8ca1254))
+
 ### [0.0.4](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.3...v0.0.4) (2021-12-23)
 
 
