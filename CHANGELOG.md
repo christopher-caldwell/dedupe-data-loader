@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.7...v0.0.8) (2023-04-05)
+
+
+### Features
+
+* Accounting for buffer encoding ([b24f290](https://github.com/christopher-caldwell/dedupe-data-loader/commit/b24f290529e269c8f8f61bd2c18054abdcd4aa6f))
+
+
+### Bug Fixes
+
+* Jest versions ([fc48ca6](https://github.com/christopher-caldwell/dedupe-data-loader/commit/fc48ca6eed00cd216dcadc552490b2eb487bc800))
+
 ### [0.0.7](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.6...v0.0.7) (2023-04-05)
 
 ### [0.0.6](https://github.com/christopher-caldwell/dedupe-data-loader/compare/v0.0.5...v0.0.6) (2023-04-05)
