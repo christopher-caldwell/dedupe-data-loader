@@ -39,6 +39,19 @@ const AuthorLoader = new DataLoader({
 })
 ```
 
+### Typing Fetcher with Generics
+
+`DataLoader` accepts 2 generics, the type of the return, and the type of the keys.
+
+```ts
+const AuthorLoader = new DataLoader<Author, Buffer>({
+  // `ids ` will be typed as `Buffer[]`
+  fetcher: async (ids) => {
+    // do something with IDs, return the result to be cached. will need to be returned as type `Author[]`
+  },
+})
+```
+
 ### Caching Strategy
 
 This library comes with a caching strategy using [node-cache](https://github.com/node-cache/node-cache). Each instance of the data loader will have a separate cache. Meaning if you create 2 loaders, they will each have their own cache.
